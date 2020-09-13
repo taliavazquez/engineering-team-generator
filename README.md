@@ -7,8 +7,7 @@
 ## Usage:
     This will be useful for generating quick teams
 ## Test
-Can you test this with npm test?
-    true
+    <nmp run test> in command line after installing <npm install>
 ## Credits:
     Aldo Carrillo and Ana Luna
 ## License:
