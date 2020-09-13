@@ -16,5 +16,5 @@ Feel free to reach out to me with any questions, contact me via email. vazquezta
 - [GitHub Profile](https://github.com/taliavazquez)
 ## Project Links:
 - [Repo](https://github.com/taliavazquez/engineering-team-generator)
-- [Deployed Site](#)
+- [Deployed Site](https://taliavazquez.github.io/engineering-team-generator/output/team.html)
 
