@@ -16,6 +16,6 @@
 Feel free to reach out to me with any questions, contact me via email. vazqueztalia@outlook.com
 - [GitHub Profile](https://github.com/taliavazquez)
 ## Project Links:
-- [Repo](https://github.com/taliavazquez/engineering-team-generator/blob/master/README.md)
+- [Repo](https://github.com/taliavazquez/engineering-team-generator)
 - [Deployed Site](#)
 
