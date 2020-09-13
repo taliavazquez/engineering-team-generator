@@ -5,12 +5,12 @@
 ## Usage:
     This will be useful for generating quick teams
 ## Test
-    <nmp run test> in command line after installing <npm install>
+    nmp run test
 ## Credits:
     Aldo Carrillo and Ana Luna
 ## License:
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
-- [License](https://opensource.org/licenses/)
+- [License](https://opensource.org/licenses/MIT)
 ## Questions:
 Feel free to reach out to me with any questions, contact me via email. vazqueztalia@outlook.com
 - [GitHub Profile](https://github.com/taliavazquez)
