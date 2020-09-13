@@ -1,173 +1,240 @@
-const path = require('path');
-const fs = require('fs');
-const util = require ('util')
-const writeFileAsynx = util.promisify(fs.writeFile);
-const inquirer = require('inquirer');
+const path = require("path");
+const fs = require("fs");
+const util = require("util");
+const writeFileAsync = util.promisify(fs.writeFile);
+const inquirer = require("inquirer");
 
-//access data path
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const { rejects } = require('assert');
 
-//manager question array
+// Manager promt Questions
+
 const managerQuestions = [
-    {
-        name: "id",
-        message: "Enter manager's ID:"
-    },
-    {
-        name: "name",
-        message: "Enter your manager's name:"
-    },
+  {
+    name: "id",
+    message: "Enter manager's ID:",
+  },
 
-    {
-        name: "email",
-        message: "Enter manager's email:"
-    },
+  {
+    name: "name",
+    message: "Enter manager's name:",
+  },
 
-    {
-        name: "OfficeNumber",
-        message: "Enter manager's email:"
-    },
+  {
+    name: "email",
+    message: "Enter manager's email:",
+  },
+
+  {
+    name: "officeNumber",
+    message: "Enter your office number:",
+  },
 ];
-//change questions to engineer
+
+// Engineer prompt questions:
 const engineerQuestions = [
-    {
-        name: "id",
-        message: "Enter manager's ID:"
-    },
-    {
-        name: "name",
-        message: "Enter your manager's name:"
-    },
+  {
+    name: "id",
+    message: "Enter engineer's ID",
+  },
 
-    {
-        name: "email",
-        message: "Enter manager's email:"
-    },
+  {
+    name: "name",
+    message: "Enter engineer's name:",
+  },
 
-    {
-        name: "OfficeNumber",
-        message: "Enter manager's email:"
-    },
+  {
+    name: "email",
+    message: "Enter engineer's email:",
+  },
+
+  {
+    name: "gitHub",
+    message: "Enter your Github URL:",
+  },
 ];
 
-//intern questions array
+// Intern prompt questions:
 const internQuestions = [
-    {
-        name: "id",
-        message: "Enter Intern's ID:"
-    },
-    {
-        name: "name",
-        message: "Enter your Intern's name:"
-    },
+  {
+    name: "id",
+    message: "Enter intern's ID",
+  },
 
-    {
-        name: "email",
-        message: "Enter interns email:"
-    },
+  {
+    name: "name",
+    message: "Enter intern's name:",
+  },
 
-    {
-        name: "school",
-        message: "Enter your school:"
-    },
+  {
+    name: "email",
+    message: "Enter intern's email:",
+  },
+
+  {
+    name: "school",
+    message: "Enter your school:",
+  },
 ];
-// organizes array of questions
-const managersArray = [];
-const engineersArray = [];
-const internsArray = [];
 
-//Prompts questions
-inquirer
-    .prompt(managerQuestions, async function (response) {
-        const newManager = new Manager(response.name, response.id, response.email, response.officeNumber);
-        managersArray.push(newManager);
-    }).then(async function (response) {
-        await
-            inquirer
-                .prompt(engineerQuestions, async function (response) {
-                    const newEngineer = new Engineer(response.name, response.id, response.email, response.github);
-                    engineersArray.push(newEngineer);
-                }).then(async function (response) {
-                    await
-                        inquirer
-                            .prompt(internQuestions, async function (response) {
-                                const newIntern = new Intern(response.name, response.id, response.email, response.school);
-                                internsArray.push(newIntern);
-                            });
-                });
-    });
+// count
+const questionCount = [
+  {
+    name: "count",
+    message: "How many do you want to enter?",
+  },
+];
 
-await
-generateTeam(managersArray, engineersArray, internsArray);
+// Creates Team
+async function createTeam(
+  managersResponses,
+  engineersResponses,
+  internsResponses
+) {
+  const managersHTML = [];
+  const engineersHTML = [];
+  const internsHTML = [];
 
-// this function will call input and generate the teams
-async function generateTeam(managersResponse, engineersResponse, internsResponse) {
-    //the following will convert input data with html that will be shown in browser
-    const managersArraysHTML = [];
-    const engineersArrayHTML = [];
-    const internsArrayHTML = [];
+  managersResponses.forEach((manager) => {
+    var managerFile = fs.readFileSync("./templates/manager.html", "utf8");
+    managerFile = replacePlaceholders(managerFile, "name", manager.getName());
+    managerFile = replacePlaceholders(managerFile, "email", manager.getEmail());
+    managerFile = replacePlaceholders(managerFile, "role", manager.getRole());
+    managerFile = replacePlaceholders(managerFile, "id", manager.getId());
+    managerFile = replacePlaceholders(
+      managerFile,
+      "officeNumber",
+      manager.getofficeNumber()
+    );
+    managersHTML.push(managerFile);
+  });
 
-    // array.forEach(element => { });
-    managersResponse.forEach(element => {
-        const managerFile = fs.readFileSync("./templates/manager.html", "utf8");
-        managerFile = replacePlaceholders(managerFile, "name", manager.getName());
-        managerFile = replacePlaceholders(managerFile, "email", manager.getEmail());
-        managerFile = replacePlaceholders(managerFile, "role", manager.getRole());
-        managerFile = replacePlaceholders(managerFile, "id", manager.getId());
-        managerFile = replacePlaceholders(managerFile, "officeNumber", manager.getOfficeNumber());
-        managersArraysHTML.push(managersFile)
-    });
+  engineersResponses.forEach((engineer) => {
+    var engineerFile = fs.readFileSync("./templates/engineer.html", "utf8");
+    engineerFile = replacePlaceholders(
+      engineerFile,
+      "name",
+      engineer.getName()
+    );
+    engineerFile = replacePlaceholders(
+      engineerFile,
+      "email",
+      engineer.getEmail()
+    );
+    engineerFile = replacePlaceholders(
+      engineerFile,
+      "role",
+      engineer.getRole()
+    );
+    engineerFile = replacePlaceholders(engineerFile, "id", engineer.getId());
+    engineerFile = replacePlaceholders(
+      engineerFile,
+      "github",
+      engineer.getGithub()
+    );
+    engineersHTML.push(engineerFile);
+  });
 
-    engineerResponse.forEach(element => {
-        const managerFile = fs.readFileSync("./templates/manager.html", "utf8");
-        engineerFile = replacePlaceholders(engineerFile, "name", engineer.getName());
-        engineerFile = replacePlaceholders(engineerFile, "email", engineer.getEmail());
-        engineerFile = replacePlaceholders(engineerFile, "role", engineer.getRole());
-        engineerFile = replacePlaceholders(engineerFile, "id", engineer.getId());
-        engineerFile = replacePlaceholders(engineerFile, "officeNumber", engineer.getOfficeNumber());
-        engineersArraysHTML.push(managersFile)
-    });
+  internsResponses.forEach((intern) => {
+    var internFile = fs.readFileSync("./templates/intern.html", "utf8");
+    internFile = replacePlaceholders(internFile, "name", intern.getName());
+    internFile = replacePlaceholders(internFile, "email", intern.getEmail());
+    internFile = replacePlaceholders(internFile, "role", intern.getRole());
+    internFile = replacePlaceholders(internFile, "id", intern.getId());
+    internFile = replacePlaceholders(internFile, "school", intern.getSchool());
+    internsHTML.push(internFile);
+  });
 
-    managersResponse.forEach(element => {
-        const managerFile = fs.readFileSync("./templates/manager.html", "utf8");
-        internFile = replacePlaceholders(internFile, "name", intern.getName());
-        internFile = replacePlaceholders(internFile, "email", intern.getEmail());
-        internFile = replacePlaceholders(internFile, "role", intern.getRole());
-        internFile = replacePlaceholders(internFile, "id", intern.getId());
-        internFile = replacePlaceholders(internFile, "officeNumber", mana.getOfficeNumber());
-        internsArraysHTML.push(internFile)
-    });
-    writeHTMLFile(managersHTML, engineersHTML, internsHTML);
-
+  writeHTMLFile(managersHTML, engineersHTML, internsHTML);
 }
 
 function writeHTMLFile(managersHTML, engineersHTML, internsHTML) {
-    const teamFile = fs.readFileSync("./templates/main.html", "utf8");
-    const teamHTML = [];
+  var teamFile = fs.readFileSync("./templates/main.html", "utf8");
+  var teamHTML = [];
 
-    teamHTML.push(managersHTML[0]);
-    teamHTML.push(engineersHTML[0]);
-    teamHTML.push(internsHTML[0]);
+  managersHTML.forEach((element) => {
+    teamHTML.push(element);
+  });
 
-    teamHTML = teamHTML.join("");
-    teamFile = replacePlaceHolders(teamFile, "team", teamHTML);
-    fs.writeFileSync("./output/team.html", teamFile);
-    console.log("Your File Has been Created")
+  engineersHTML.forEach((element) => {
+    teamHTML.push(element);
+  });
+
+  internsHTML.forEach((element) => {
+    teamHTML.push(element);
+  });
+
+  teamHTML = teamHTML.join("");
+  teamFile = replacePlaceholders(teamFile, "team", teamHTML);
+  writeFileAsync("./output/team.html", teamFile);
+  console.log("########  Your File Has Been Created!  #########");
 }
 
-function replacePlaceHolders(template, placeholder, value){
-    const pattern = new RegExp("{{"+ placeholder + "}}", "gm");
-    return template.replace(pattern, value);
+function replacePlaceholders(template, placeholder, value) {
+  const pattern = new RegExp("{{ " + placeholder + " }}", "gm");
+  return template.replace(pattern, value);
 }
 
+(async function () {
+  // Organizes array of questions for manager, engineer and intern
+  const managersArray = [];
+  const engineersArray = [];
+  const internsArray = [];
 
+  console.log("********** CREATE YOUR TEAM **********");
+  console.log("                            ");
 
+  // Manager PROMPT
+  console.log("====== Manager Info ======");
+  var responseManager = await inquirer.prompt(managerQuestions);
+  var newManager = new Manager(
+    responseManager.name,
+    responseManager.id,
+    responseManager.email,
+    responseManager.officeNumber
+  );
+  managersArray.push(newManager);
+  console.log("                            ");
 
+  //Count for Engineers
+  console.log("====== Engineer Info ======");
+  var responseCount = await inquirer.prompt(questionCount);
+  console.log("                            ");
 
+  for (let index = 0; index < parseInt(responseCount.count); index++) {
+    //Engineer PROMPT
+    var responseEngineer = await inquirer.prompt(engineerQuestions);
+    var newEngineer = new Engineer(
+      responseEngineer.name,
+      responseEngineer.id,
+      responseEngineer.email,
+      responseEngineer.gitHub
+    );
+    engineersArray.push(newEngineer);
+    console.log("                            ");
+  }
+  console.log("                            ");
 
+  //Count fo Interns
+  console.log("====== Intern Info ======");
+  responseCount = await inquirer.prompt(questionCount);
+  console.log("                            ");
 
+  for (let index = 0; index < parseInt(responseCount.count); index++) {
+    //Intern PROMPT
+    var responseIntern = await inquirer.prompt(internQuestions);
+    var newIntern = new Intern(
+      responseIntern.name,
+      responseIntern.id,
+      responseIntern.email,
+      responseIntern.school
+    );
+    internsArray.push(newIntern);
+    console.log("                            ");
+  }
+  console.log("                            ");
 
-
+  // Function create team using data captured
+  await createTeam(managersArray, engineersArray, internsArray);
+})();
